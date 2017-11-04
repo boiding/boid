@@ -25,7 +25,6 @@ fn main() {
         .with_group_size(20)
         .with_size(10f64)
         .build();
-    let boids = boid_config.group(&mut rng);
 
     let mut window: Window = WindowSettings::new(
             "boiding",
@@ -36,7 +35,7 @@ fn main() {
         .build()
         .unwrap();
 
-    let mut app = App::new(GlGraphics::new(OPENGL_VERSION), boid_config, boids);
+    let mut app = App::new(GlGraphics::new(OPENGL_VERSION), boid_config, &mut rng);
 
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {

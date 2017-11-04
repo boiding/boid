@@ -2,6 +2,7 @@ use piston::input::{RenderArgs, UpdateArgs};
 use opengl_graphics::GlGraphics;
 use graphics::{ellipse, clear, Transformed};
 use graphics::ellipse::circle;
+use rand::Rng;
 use super::model::{BoidConfig, Boid};
 
 const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
@@ -14,8 +15,9 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(gl: GlGraphics, config: BoidConfig, boids: Vec<Boid>) -> App {
-        App { gl, config, boids }
+    pub fn new<R>(gl: GlGraphics, config: BoidConfig, rng: &mut R) -> App where R: Rng {
+        let boids = config.group(rng);
+        App { gl, config, boids  }
     }
 
     pub fn render(&mut self, args: &RenderArgs) {
