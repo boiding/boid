@@ -62,3 +62,44 @@ impl BoidConfig {
         boids
     }
 }
+
+pub struct BoidConfigFactory {
+    max_x: f64,
+    max_y: f64,
+    min_speed: f64,
+    max_speed: f64,
+}
+
+impl BoidConfigFactory {
+    pub fn new() -> Self {
+        BoidConfigFactory { max_x: 100f64, max_y: 100f64, min_speed: 200f64, max_speed: 300f64 }
+    }
+
+    pub fn with_max_x(mut self, max_x: f64) -> Self {
+        self.max_x = max_x;
+
+        self
+    }
+
+    pub fn with_max_y(mut self, max_y: f64) -> Self {
+        self.max_y = max_y;
+
+        self
+    }
+
+    pub fn with_min_speed(mut self, min_speed: f64) -> Self {
+        self.min_speed = min_speed;
+
+        self
+    }
+
+    pub fn with_max_speed(mut self, max_speed: f64) -> Self {
+        self.max_speed = max_speed;
+
+        self
+    }
+
+    pub fn build(self) -> BoidConfig {
+        BoidConfig::new(self.max_x, self.max_y, self.min_speed, self.max_speed)
+    }
+}

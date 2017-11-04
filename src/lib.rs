@@ -7,5 +7,5 @@ extern crate rand;
 mod model;
 mod app;
 
-pub use model::{BoidConfig, Boid};
+pub use model::{BoidConfigFactory, BoidConfig, Boid};
 pub use app::{App, ShapeConfig};
