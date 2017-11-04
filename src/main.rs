@@ -11,18 +11,18 @@ use piston::input::*;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL };
 use rand::thread_rng;
-use std::iter::Iterator;
-use boid::{App, BoidConfig, Boid};
+use boid::{App, BoidConfig};
+
+const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
 fn main() {
     let mut rng = thread_rng();
-    let opengl = OpenGL::V3_2;
 
     let mut window: Window = WindowSettings::new(
             "boiding",
             [200, 200]
         )
-        .opengl(opengl)
+        .opengl(OPENGL_VERSION)
         .exit_on_esc(true)
         .build()
         .unwrap();
@@ -30,7 +30,7 @@ fn main() {
     let boid_config = BoidConfig::new(100f64, 100f64, 5f64);
     let boids = boid_config.group_of(20, &mut rng);
 
-    let mut app = App::new(GlGraphics::new(opengl), boids);
+    let mut app = App::new(GlGraphics::new(OPENGL_VERSION), boids);
 
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {
