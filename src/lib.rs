@@ -8,4 +8,4 @@ mod model;
 mod app;
 
 pub use model::{BoidConfig, Boid};
-pub use app::App;
+pub use app::{App, ShapeConfig};
