@@ -11,11 +11,12 @@ use piston::input::*;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL };
 use rand::thread_rng;
+use std::iter::Iterator;
 use boid::{BoidConfig, Boid};
 
 pub struct App {
     gl: GlGraphics, // OpenGL drawing backend.
-    boid: Boid,
+    boids: Vec<Boid>,
 }
 
 impl App {
@@ -26,25 +27,32 @@ impl App {
         const RED:   [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
         let square = rectangle::square(0.0, 0.0, 50.0);
-        self.boid.clip(args.width, args.height);
-        let rotation = self.boid.heading;
-        let (x, y) = (self.boid.x, self.boid.y);
+
+        self.boids.iter_mut().for_each(|b| b.clip(args.width, args.height));
+        let mut boids: Vec<&Boid> = self.boids.iter().map(|b| b.clone()).collect();
 
         self.gl.draw(args.viewport(), |c, gl| {
             // Clear the screen.
             clear(GREEN, gl);
 
-            let transform = c.transform.trans(x, y)
-                                       .rot_rad(rotation)
-                                       .trans(-25.0, -25.0);
+            for boid in boids.iter_mut() {
+                let rotation = boid.heading;
+                let (x, y) = (boid.x, boid.y);
 
-            // Draw a box rotating around the middle of the screen.
-            rectangle(RED, square, transform, gl);
+
+                let transform = c.transform.trans(x, y)
+                    .rot_rad(rotation)
+                    .trans(-25.0, -25.0);
+
+                rectangle(RED, square, transform, gl);
+            }
         });
     }
 
     fn update(&mut self, _: &UpdateArgs) {
-        self.boid.update();
+        for boid in self.boids.iter_mut() {
+            boid.update()
+        }
     }
 }
 
@@ -64,11 +72,14 @@ fn main() {
         .unwrap();
 
     let boid_config = BoidConfig::new(100f64, 100f64, 5f64);
+    let boids: Vec<Boid> = (1..10)
+        .map(|_| boid_config.random(&mut rng) )
+        .collect();
 
     // Create a new game and run it.
     let mut app = App {
         gl: GlGraphics::new(opengl),
-        boid: boid_config.random(&mut rng),
+        boids,
     };
 
     let mut events = Events::new(EventSettings::new());
