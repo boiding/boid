@@ -52,4 +52,12 @@ impl BoidConfig {
 
         Boid { x, y, heading, speed }
     }
+
+    pub fn group_of<R>(&self, size: usize, rng: &mut R) -> Vec<Boid> where R: Rng {
+        let boids: Vec<Boid> = (1..size)
+            .map(|_| self.random(rng) )
+            .collect();
+
+        boids
+    }
 }

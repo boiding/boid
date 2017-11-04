@@ -28,9 +28,7 @@ fn main() {
         .unwrap();
 
     let boid_config = BoidConfig::new(100f64, 100f64, 5f64);
-    let boids: Vec<Boid> = (1..10)
-        .map(|_| boid_config.random(&mut rng) )
-        .collect();
+    let boids = boid_config.group_of(20, &mut rng);
 
     let mut app = App::new(GlGraphics::new(opengl), boids);
 
