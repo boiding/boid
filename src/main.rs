@@ -24,6 +24,7 @@ impl App {
         const RED:   [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
         let square = rectangle::square(0.0, 0.0, 50.0);
+        self.boid.clip(args.width, args.height);
         let rotation = self.boid.heading;
         let (x, y) = (self.boid.x, self.boid.y);
 
