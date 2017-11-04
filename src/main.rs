@@ -2,6 +2,7 @@ extern crate piston;
 extern crate graphics;
 extern crate glutin_window;
 extern crate opengl_graphics;
+extern crate rand;
 extern crate boid;
 
 use piston::window::WindowSettings;
@@ -9,7 +10,8 @@ use piston::event_loop::*;
 use piston::input::*;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL };
-use boid::Boid;
+use rand::thread_rng;
+use boid::{BoidConfig, Boid};
 
 pub struct App {
     gl: GlGraphics, // OpenGL drawing backend.
@@ -41,18 +43,19 @@ impl App {
         });
     }
 
-    fn update(&mut self, args: &UpdateArgs) {
+    fn update(&mut self, _: &UpdateArgs) {
         self.boid.update();
     }
 }
 
 fn main() {
+    let mut rng = thread_rng();
     // Change this to OpenGL::V2_1 if not working.
     let opengl = OpenGL::V3_2;
 
     // Create an Glutin window.
     let mut window: Window = WindowSettings::new(
-            "spinning-square",
+            "boiding",
             [200, 200]
         )
         .opengl(opengl)
@@ -60,10 +63,12 @@ fn main() {
         .build()
         .unwrap();
 
+    let boid_config = BoidConfig::new(100f64, 100f64, 5f64);
+
     // Create a new game and run it.
     let mut app = App {
         gl: GlGraphics::new(opengl),
-        boid: Boid::new(100f64, 100f64),
+        boid: boid_config.random(&mut rng),
     };
 
     let mut events = Events::new(EventSettings::new());
