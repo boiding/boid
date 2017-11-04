@@ -13,7 +13,6 @@ use boid::Boid;
 
 pub struct App {
     gl: GlGraphics, // OpenGL drawing backend.
-    rotation: f64,   // Rotation for the square.
     boid: Boid,
 }
 
@@ -25,7 +24,7 @@ impl App {
         const RED:   [f32; 4] = [1.0, 0.0, 0.0, 1.0];
 
         let square = rectangle::square(0.0, 0.0, 50.0);
-        let rotation = self.rotation;
+        let rotation = self.boid.heading;
         let (x, y) = (self.boid.x, self.boid.y);
 
         self.gl.draw(args.viewport(), |c, gl| {
@@ -42,8 +41,7 @@ impl App {
     }
 
     fn update(&mut self, args: &UpdateArgs) {
-        // Rotate 2 radians per second.
-        self.rotation += 2.0 * args.dt;
+        self.boid.update();
     }
 }
 
@@ -64,8 +62,7 @@ fn main() {
     // Create a new game and run it.
     let mut app = App {
         gl: GlGraphics::new(opengl),
-        boid: Boid::new(100 as f64, 100 as f64),
-        rotation: 0.0,
+        boid: Boid::new(100f64, 100f64),
     };
 
     let mut events = Events::new(EventSettings::new());
