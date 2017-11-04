@@ -21,13 +21,13 @@ impl App {
         let square = rectangle::square(0.0, 0.0, 50.0);
 
         self.boids.iter_mut().for_each(|b| b.clip(args.width, args.height));
-        let mut boids: Vec<&Boid> = self.boids.iter().map(|b| b.clone()).collect();
+        let boids: Vec<&Boid> = self.boids.iter().map(|b| b.clone()).collect();
 
         self.gl.draw(args.viewport(), |c, gl| {
             // Clear the screen.
             clear(GREEN, gl);
 
-            for boid in boids.iter_mut() {
+            for boid in boids {
                 let rotation = boid.heading;
                 let (x, y) = (boid.x, boid.y);
 
