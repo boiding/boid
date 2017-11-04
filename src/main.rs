@@ -24,8 +24,9 @@ fn main() {
         .with_max_y(100f64)
         .with_min_speed(200f64)
         .with_max_speed(300f64)
+        .with_group_size(20)
         .build();
-    let boids = boid_config.group_of(20, &mut rng);
+    let boids = boid_config.group(&mut rng);
 
     let mut window: Window = WindowSettings::new(
             "boiding",
