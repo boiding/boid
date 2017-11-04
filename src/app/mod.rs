@@ -1,6 +1,7 @@
 use piston::input::{RenderArgs, UpdateArgs};
 use opengl_graphics::GlGraphics;
-use graphics::{rectangle, clear, Transformed};
+use graphics::{ellipse, clear, Transformed};
+use graphics::ellipse::circle;
 use super::model::Boid;
 
 const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
@@ -18,7 +19,7 @@ impl App {
 
     pub fn render(&mut self, args: &RenderArgs) {
 
-        let shape = rectangle::square(0.0, 0.0, 50.0);
+        let shape = circle(0.0, 0.0, 50.0);
 
         self.boids.iter_mut().for_each(|b| b.clip(args.width, args.height));
         let boids: Vec<&Boid> = self.boids.iter().map(|b| b.clone()).collect();
@@ -36,7 +37,7 @@ impl App {
                     .rot_rad(rotation)
                     .trans(-25.0, -25.0);
 
-                rectangle(RED, shape, transform, gl);
+                ellipse(RED, shape, transform, gl);
             }
         });
     }
