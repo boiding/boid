@@ -39,11 +39,12 @@ pub struct BoidConfig {
     min_speed: f64,
     max_speed: f64,
     group_size: u16,
+    size: f64,
 }
 
 impl BoidConfig {
-    pub fn new(max_x: f64, max_y: f64, min_speed: f64, max_speed: f64, group_size: u16) -> BoidConfig {
-        BoidConfig { max_x, max_y, min_speed, max_speed, group_size }
+    pub fn new(max_x: f64, max_y: f64, min_speed: f64, max_speed: f64, group_size: u16, size: f64) -> BoidConfig {
+        BoidConfig { max_x, max_y, min_speed, max_speed, group_size, size }
     }
 
     pub fn random<R>(&self, rng: &mut R) -> Boid where R: Rng {
@@ -62,6 +63,10 @@ impl BoidConfig {
 
         boids
     }
+
+    pub fn size(&self) -> f64 {
+        self.size
+    }
 }
 
 pub struct BoidConfigFactory {
@@ -70,11 +75,12 @@ pub struct BoidConfigFactory {
     min_speed: f64,
     max_speed: f64,
     group_size: u16,
+    size: f64,
 }
 
 impl BoidConfigFactory {
     pub fn new() -> Self {
-        BoidConfigFactory { max_x: 100f64, max_y: 100f64, min_speed: 200f64, max_speed: 300f64, group_size: 20 }
+        BoidConfigFactory { max_x: 100f64, max_y: 100f64, min_speed: 200f64, max_speed: 300f64, group_size: 20, size: 10f64 }
     }
 
     pub fn with_max_x(mut self, max_x: f64) -> Self {
@@ -107,7 +113,13 @@ impl BoidConfigFactory {
         self
     }
 
+    pub fn with_size(mut self, size: f64) -> Self {
+        self.size = size;
+
+        self
+    }
+
     pub fn build(self) -> BoidConfig {
-        BoidConfig::new(self.max_x, self.max_y, self.min_speed, self.max_speed, self.group_size)
+        BoidConfig::new(self.max_x, self.max_y, self.min_speed, self.max_speed, self.group_size, self.size)
     }
 }

@@ -11,13 +11,11 @@ use piston::input::*;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL };
 use rand::thread_rng;
-use boid::{App, ShapeConfig, BoidConfigFactory};
+use boid::{App, BoidConfigFactory};
 
 const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
 fn main() {
-    let shape_config = ShapeConfig::new(10f64);
-
     let mut rng = thread_rng();
     let boid_config = BoidConfigFactory::new()
         .with_max_x(100f64)
@@ -25,6 +23,7 @@ fn main() {
         .with_min_speed(200f64)
         .with_max_speed(300f64)
         .with_group_size(20)
+        .with_size(10f64)
         .build();
     let boids = boid_config.group(&mut rng);
 
@@ -37,7 +36,7 @@ fn main() {
         .build()
         .unwrap();
 
-    let mut app = App::new(GlGraphics::new(OPENGL_VERSION), shape_config, boids);
+    let mut app = App::new(GlGraphics::new(OPENGL_VERSION), boid_config, boids);
 
     let mut events = Events::new(EventSettings::new());
     while let Some(e) = events.next(&mut window) {
