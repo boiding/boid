@@ -17,6 +17,8 @@ const OPENGL_VERSION: OpenGL = OpenGL::V3_2;
 
 fn main() {
     let mut rng = thread_rng();
+    let boid_config = BoidConfig::new(100f64, 100f64, 5f64);
+    let boids = boid_config.group_of(20, &mut rng);
 
     let mut window: Window = WindowSettings::new(
             "boiding",
@@ -26,9 +28,6 @@ fn main() {
         .exit_on_esc(true)
         .build()
         .unwrap();
-
-    let boid_config = BoidConfig::new(100f64, 100f64, 5f64);
-    let boids = boid_config.group_of(20, &mut rng);
 
     let mut app = App::new(GlGraphics::new(OPENGL_VERSION), boids);
 
