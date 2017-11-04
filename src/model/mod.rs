@@ -36,19 +36,20 @@ impl Boid {
 pub struct BoidConfig {
     max_x: f64,
     max_y: f64,
+    min_speed: f64,
     max_speed: f64,
 }
 
 impl BoidConfig {
-    pub fn new(max_x: f64, max_y: f64, max_speed: f64) -> BoidConfig {
-        BoidConfig { max_x, max_y, max_speed }
+    pub fn new(max_x: f64, max_y: f64, min_speed: f64, max_speed: f64) -> BoidConfig {
+        BoidConfig { max_x, max_y, min_speed, max_speed }
     }
 
     pub fn random<R>(&self, rng: &mut R) -> Boid where R: Rng {
         let x = self.max_x * rng.next_f64();
         let y = self.max_y * rng.next_f64();
         let heading = 2f64 * PI * rng.next_f64();
-        let speed = self.max_speed * rng.next_f64();
+        let speed = self.min_speed + (self.max_speed - self.min_speed) * rng.next_f64();
 
         Boid { x, y, heading, speed }
     }
