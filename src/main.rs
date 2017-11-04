@@ -2,16 +2,19 @@ extern crate piston;
 extern crate graphics;
 extern crate glutin_window;
 extern crate opengl_graphics;
+extern crate boid;
 
 use piston::window::WindowSettings;
 use piston::event_loop::*;
 use piston::input::*;
 use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL };
+use boid::Boid;
 
 pub struct App {
     gl: GlGraphics, // OpenGL drawing backend.
-    rotation: f64   // Rotation for the square.
+    rotation: f64,   // Rotation for the square.
+    boid: Boid,
 }
 
 impl App {
@@ -23,8 +26,7 @@ impl App {
 
         let square = rectangle::square(0.0, 0.0, 50.0);
         let rotation = self.rotation;
-        let (x, y) = ((args.width / 2) as f64,
-                      (args.height / 2) as f64);
+        let (x, y) = (self.boid.x, self.boid.y);
 
         self.gl.draw(args.viewport(), |c, gl| {
             // Clear the screen.
@@ -62,7 +64,8 @@ fn main() {
     // Create a new game and run it.
     let mut app = App {
         gl: GlGraphics::new(opengl),
-        rotation: 0.0
+        boid: Boid::new(100 as f64, 100 as f64),
+        rotation: 0.0,
     };
 
     let mut events = Events::new(EventSettings::new());
