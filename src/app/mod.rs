@@ -18,7 +18,7 @@ impl App {
 
     pub fn render(&mut self, args: &RenderArgs) {
 
-        let square = rectangle::square(0.0, 0.0, 50.0);
+        let shape = rectangle::square(0.0, 0.0, 50.0);
 
         self.boids.iter_mut().for_each(|b| b.clip(args.width, args.height));
         let boids: Vec<&Boid> = self.boids.iter().map(|b| b.clone()).collect();
@@ -36,7 +36,7 @@ impl App {
                     .rot_rad(rotation)
                     .trans(-25.0, -25.0);
 
-                rectangle(RED, square, transform, gl);
+                rectangle(RED, shape, transform, gl);
             }
         });
     }
