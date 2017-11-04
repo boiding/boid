@@ -41,9 +41,9 @@ impl App {
         });
     }
 
-    pub fn update(&mut self, _: &UpdateArgs) {
+    pub fn update(&mut self, args: &UpdateArgs) {
         for boid in self.boids.iter_mut() {
-            boid.update()
+            boid.update(args.dt)
         }
     }
 }

@@ -13,12 +13,12 @@ impl Boid {
         Boid { x, y, heading: 0f64, speed: 3f64 }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, dt: f64) {
         let dx = self.speed * self.heading.cos();
         let dy = self.speed * self.heading.sin();
 
-        self.x += dx;
-        self.y += dy;
+        self.x += dx * dt;
+        self.y += dy * dt;
     }
 
     pub fn clip(&mut self, width: u32, height: u32) {
