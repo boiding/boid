@@ -33,7 +33,8 @@ impl Velocity {
 pub struct Boid {
     pub x: f64,
     pub y: f64,
-    pub velocity: Velocity
+    pub velocity: Velocity,
+    agility: f64
 }
 
 impl Boid {
@@ -63,13 +64,14 @@ pub struct BoidConfig {
     max_y: f64,
     min_speed: f64,
     max_speed: f64,
+    agility: f64,
     group_size: u16,
     size: f64,
 }
 
 impl BoidConfig {
-    pub fn new(max_x: f64, max_y: f64, min_speed: f64, max_speed: f64, group_size: u16, size: f64) -> BoidConfig {
-        BoidConfig { max_x, max_y, min_speed, max_speed, group_size, size }
+    pub fn new(max_x: f64, max_y: f64, min_speed: f64, max_speed: f64, agility: f64, group_size: u16, size: f64) -> BoidConfig {
+        BoidConfig { max_x, max_y, min_speed, max_speed, agility, group_size, size }
     }
 
     pub fn random<R>(&self, rng: &mut R) -> Boid where R: Rng {
@@ -79,7 +81,7 @@ impl BoidConfig {
         let speed = self.min_speed + (self.max_speed - self.min_speed) * rng.next_f64();
         let velocity = Velocity::new(heading, speed);
 
-        Boid { x, y, velocity }
+        Boid { x, y, velocity, agility: self.agility }
     }
 
     pub fn group<R>(&self, rng: &mut R) -> Vec<Boid> where R: Rng {
@@ -100,13 +102,14 @@ pub struct BoidConfigFactory {
     max_y: f64,
     min_speed: f64,
     max_speed: f64,
+    agility: f64,
     group_size: u16,
     size: f64,
 }
 
 impl BoidConfigFactory {
     pub fn new() -> Self {
-        BoidConfigFactory { max_x: 100f64, max_y: 100f64, min_speed: 200f64, max_speed: 300f64, group_size: 20, size: 10f64 }
+        BoidConfigFactory { max_x: 100f64, max_y: 100f64, min_speed: 200f64, max_speed: 300f64, agility: 0.1, group_size: 20, size: 10f64 }
     }
 
     pub fn with_max_x(mut self, max_x: f64) -> Self {
@@ -133,6 +136,12 @@ impl BoidConfigFactory {
         self
     }
 
+    pub fn with_agility(mut self, agility: f64) -> Self {
+        self.agility = agility;
+
+        self
+    }
+
     pub fn with_group_size(mut self, group_size: u16) -> Self {
         self.group_size = group_size;
 
@@ -146,6 +155,6 @@ impl BoidConfigFactory {
     }
 
     pub fn build(self) -> BoidConfig {
-        BoidConfig::new(self.max_x, self.max_y, self.min_speed, self.max_speed, self.group_size, self.size)
+        BoidConfig::new(self.max_x, self.max_y, self.min_speed, self.max_speed, self.agility, self.group_size, self.size)
     }
 }
