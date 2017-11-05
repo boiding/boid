@@ -1,39 +1,16 @@
 use std::f64::consts::PI;
 use rand::Rng;
 
-const TWO_PI: f64 = 2.0 * PI;
+pub mod velocity;
 
-#[derive(Debug, PartialEq, Clone)]
-pub struct Velocity {
-    pub heading: f64,
-    pub speed: f64,
-}
-
-impl Velocity {
-    pub fn new(heading: f64, speed: f64) -> Velocity {
-        Velocity { heading, speed }
-    }
-
-    pub fn delta(&self) -> (f64, f64) {
-        (self.speed * self.heading.cos(), self.speed * self.heading.sin())
-    }
-
-    pub fn turn(&self, angle: f64) -> Velocity {
-        Velocity::new(self.heading + angle, self.speed)
-    }
-
-    pub fn clip(&mut self) {
-        let factor = (self.heading / TWO_PI).floor();
-        self.heading -= factor * TWO_PI;
-    }
-}
-
+pub use self::velocity::Velocity;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Boid {
     pub x: f64,
     pub y: f64,
     pub velocity: Velocity,
+    pub target: Option<Velocity>,
     agility: f64
 }
 
@@ -81,7 +58,7 @@ impl BoidConfig {
         let speed = self.min_speed + (self.max_speed - self.min_speed) * rng.next_f64();
         let velocity = Velocity::new(heading, speed);
 
-        Boid { x, y, velocity, agility: self.agility }
+        Boid { x, y, velocity, agility: self.agility, target: None }
     }
 
     pub fn group<R>(&self, rng: &mut R) -> Vec<Boid> where R: Rng {
