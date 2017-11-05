@@ -51,8 +51,13 @@ impl App {
         for boid in self.boids.iter_mut() {
             boid.update(args.dt)
         }
+        let mut clique: Vec<Boid> = vec!();
+        for b in &self.boids {
+            let clone = b.clone();
+            clique.push(clone);
+        }
         for boid in self.boids.iter_mut() {
-            match brain(boid) {
+            match brain(boid, &clique) {
                 Some(velocity) => {
                     boid.velocity = velocity;
                 },
