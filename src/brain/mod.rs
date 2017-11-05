@@ -36,7 +36,6 @@ fn avoid_closest(boid: &Boid, clique: &Vec<Boid>) -> Velocity {
     let heading = y.atan2(x) + PI;
     let distance = x.abs().hypot(y.abs());
     let speed = 300.0 * 5.0/distance;
-    println!("{}", speed);
 
     Velocity::new(heading, speed)
 }
