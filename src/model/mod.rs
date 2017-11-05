@@ -2,17 +2,36 @@ use std::f64::consts::PI;
 use rand::Rng;
 
 #[derive(Debug, PartialEq, Clone)]
-pub struct Boid {
-    pub x: f64,
-    pub y: f64,
+pub struct Velocity {
     pub heading: f64,
     pub speed: f64,
 }
 
+impl Velocity {
+    pub fn new(heading: f64, speed: f64) -> Velocity {
+        Velocity { heading, speed }
+    }
+
+    pub fn delta(&self) -> (f64, f64) {
+        (self.speed * self.heading.cos(), self.speed * self.heading.sin())
+    }
+
+    pub fn turn(&self, angle: f64) -> Velocity {
+        Velocity::new(self.heading + angle, self.speed)
+    }
+}
+
+
+#[derive(Debug, PartialEq, Clone)]
+pub struct Boid {
+    pub x: f64,
+    pub y: f64,
+    pub velocity: Velocity
+}
+
 impl Boid {
     pub fn update(&mut self, dt: f64) {
-        let dx = self.speed * self.heading.cos();
-        let dy = self.speed * self.heading.sin();
+        let (dx, dy) = self.velocity.delta();
 
         self.x += dx * dt;
         self.y += dy * dt;
@@ -49,8 +68,9 @@ impl BoidConfig {
         let y = self.max_y * rng.next_f64();
         let heading = 2f64 * PI * rng.next_f64();
         let speed = self.min_speed + (self.max_speed - self.min_speed) * rng.next_f64();
+        let velocity = Velocity::new(heading, speed);
 
-        Boid { x, y, heading, speed }
+        Boid { x, y, velocity }
     }
 
     pub fn group<R>(&self, rng: &mut R) -> Vec<Boid> where R: Rng {

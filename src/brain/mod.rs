@@ -1,5 +1,6 @@
-use super::model::Boid;
+use super::model::{Boid, Velocity};
 
-pub fn brain(boid: &Boid) -> Option<(f64, f64)> {
-    Some((boid.heading + 0.01, boid.speed))
+pub fn brain(boid: &Boid) -> Option<Velocity> {
+    let new_velocity = boid.velocity.turn(0.01);
+    Some(new_velocity)
 }

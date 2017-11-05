@@ -34,7 +34,7 @@ impl App {
             clear(GREEN, gl);
 
             for boid in boids {
-                let rotation = boid.heading;
+                let rotation = boid.velocity.heading;
                 let (x, y) = (boid.x, boid.y);
 
 
@@ -53,9 +53,8 @@ impl App {
         }
         for boid in self.boids.iter_mut() {
             match brain(boid) {
-                Some((target_heading, target_speed)) => {
-                    boid.heading = target_heading;
-                    boid.speed = target_speed;
+                Some(velocity) => {
+                    boid.velocity = velocity;
                 },
                 None => {
                     /* do nothing */
