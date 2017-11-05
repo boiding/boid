@@ -1,11 +1,12 @@
 use std::f64::consts::PI;
 use rand::Rng;
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct Boid {
     pub x: f64,
     pub y: f64,
     pub heading: f64,
-    speed: f64,
+    pub speed: f64,
 }
 
 impl Boid {

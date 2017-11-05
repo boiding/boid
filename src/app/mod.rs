@@ -26,7 +26,7 @@ impl App {
         let center = self.config.size() / 2.0;
 
         self.boids.iter_mut().for_each(|b| b.clip(args.width, args.height));
-        let boids: Vec<&Boid> = self.boids.iter().map(|b| b.clone()).collect();
+        let boids: Vec<Boid> = self.boids.iter().map(|b| b.clone()).collect();
 
         self.gl.draw(args.viewport(), |c, gl| {
             // Clear the screen.
@@ -50,6 +50,21 @@ impl App {
         for boid in self.boids.iter_mut() {
             boid.update(args.dt)
         }
+        for boid in self.boids.iter_mut() {
+            match brain(boid) {
+                Some((target_heading, target_speed)) => {
+                    boid.heading = target_heading;
+                    boid.speed = target_speed;
+                },
+                None => {
+                    /* do nothing */
+                }
+            }
+        }
     }
+}
+
+fn brain(boid: &Boid) -> Option<(f64, f64)> {
+    Some((boid.heading + 0.01, boid.speed))
 }
 
