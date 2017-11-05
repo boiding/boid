@@ -4,6 +4,7 @@ use graphics::{ellipse, clear, Transformed};
 use graphics::ellipse::circle;
 use rand::Rng;
 use super::model::{BoidConfig, Boid};
+use super::brain::brain;
 
 const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
 const RED:   [f32; 4] = [1.0, 0.0, 0.0, 1.0];
@@ -63,8 +64,3 @@ impl App {
         }
     }
 }
-
-fn brain(boid: &Boid) -> Option<(f64, f64)> {
-    Some((boid.heading + 0.01, boid.speed))
-}
-
