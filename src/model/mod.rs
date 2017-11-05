@@ -1,6 +1,8 @@
 use std::f64::consts::PI;
 use rand::Rng;
 
+const TWO_PI: f64 = 2.0 * PI;
+
 #[derive(Debug, PartialEq, Clone)]
 pub struct Velocity {
     pub heading: f64,
@@ -18,6 +20,11 @@ impl Velocity {
 
     pub fn turn(&self, angle: f64) -> Velocity {
         Velocity::new(self.heading + angle, self.speed)
+    }
+
+    pub fn clip(&mut self) {
+        let factor = (self.heading / TWO_PI).floor();
+        self.heading -= factor * TWO_PI;
     }
 }
 
@@ -46,6 +53,8 @@ impl Boid {
 
         let factor = (self.y / height).floor();
         self.y -= factor * height;
+
+        self.velocity.clip();
     }
 }
 
