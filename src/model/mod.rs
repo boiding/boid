@@ -20,6 +20,23 @@ impl Boid {
 
         self.x += dx * dt;
         self.y += dy * dt;
+
+        let velocity = match self.target {
+            Some(ref target) => {
+                let velocity = self.velocity.clone();
+                let target = target.clone();
+
+                velocity * (1.0 - self.agility) + target * self.agility
+            }
+
+            None => {
+                let velocity = self.velocity.clone();
+
+                velocity
+            }
+        };
+
+        self.velocity = velocity;
     }
 
     pub fn clip(&mut self, width: u32, height: u32) {
