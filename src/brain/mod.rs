@@ -4,15 +4,18 @@ use super::model::velocity::Velocity;
 
 const AVERAGE_WEIGHT: f64 = 2.0;
 const AVOIDANCE_WEIGHT: f64 = 3.0;
-const TOTAL_WEIGHT: f64 = AVERAGE_WEIGHT + AVOIDANCE_WEIGHT;
+const SEEK_WEIGHT: f64 = 2.0;
+const TOTAL_WEIGHT: f64 = AVERAGE_WEIGHT + AVOIDANCE_WEIGHT + SEEK_WEIGHT;
 
 pub fn brain(boid: &Boid, clique: &Vec<Boid>) -> Option<Velocity> {
     let average_velocity = average_velocity(&clique);
     let avoidance_velocity = avoid_closest(&boid, &clique);
+    let seek_velocity = seek_center(&boid, &clique);
 
     let mut velocity =
         average_velocity.clone() * AVERAGE_WEIGHT +
-        avoidance_velocity.clone() * AVOIDANCE_WEIGHT;
+        avoidance_velocity.clone() * AVOIDANCE_WEIGHT +
+        seek_velocity.clone() * SEEK_WEIGHT;
     velocity = velocity * (1.0/TOTAL_WEIGHT);
 
     Some(velocity)
@@ -52,4 +55,19 @@ fn closest_boid(boid: &Boid, clique: &Vec<Boid>) -> Boid {
 
 fn distance(u: &Boid, v: &Boid) -> f64 {
     (u.x - v.x).abs().hypot((u.y - v.y).abs())
+}
+
+fn seek_center(boid: &Boid, clique: &Vec<Boid>) -> Velocity {
+    let n = clique.len() as f64;
+    let (center_x, center_y) = clique.iter()
+        .map(|c| (c.x, c.y))
+        .fold((0f64, 0f64), |acc, t| (acc.0 + t.0, acc.1 + t.1));
+
+    let dx = center_x - boid.x;
+    let dy = center_y - boid.y;
+    let heading = dy.atan2(dx);
+    let speed = 10f64*dx.hypot(dy);
+
+    let velocity = Velocity::new(heading, speed) * (1.0/n);
+    velocity
 }
