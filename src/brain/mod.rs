@@ -18,6 +18,10 @@ pub fn brain(boid: &Boid, clique: &Vec<Boid>) -> Option<Velocity> {
         seek_velocity.clone() * SEEK_WEIGHT;
     velocity = velocity * (1.0/TOTAL_WEIGHT);
 
+    if velocity.speed.abs() > 300.0 {
+        velocity.speed = 300.0
+    }
+
     Some(velocity)
 }
 
