@@ -66,7 +66,7 @@ fn seek_center(boid: &Boid, clique: &Vec<Boid>) -> Velocity {
     let dx = center_x - boid.x;
     let dy = center_y - boid.y;
     let heading = dy.atan2(dx);
-    let speed = 10f64*dx.hypot(dy);
+    let speed = 100f64.max(10f64*dx.hypot(dy));
 
     let velocity = Velocity::new(heading, speed) * (1.0/n);
     velocity
