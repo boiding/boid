@@ -8,9 +8,15 @@ const SEEK_WEIGHT: f64 = 2.0;
 const TOTAL_WEIGHT: f64 = AVERAGE_WEIGHT + AVOIDANCE_WEIGHT + SEEK_WEIGHT;
 
 pub fn brain(boid: &Boid, clique: &Vec<Boid>) -> Option<Velocity> {
-    let average_velocity = average_velocity(&clique);
-    let avoidance_velocity = avoid_closest(&boid, &clique);
-    let seek_velocity = seek_center(&boid, &clique);
+    let closest: Vec<Boid> = clique.iter()
+        .map(|c| (c.clone(), distance(&boid, &c)))
+        .filter(|t| t.1 <= 100.0 )
+        .map(|t| t.0 )
+        .collect();
+
+    let average_velocity = average_velocity(&closest);
+    let avoidance_velocity = avoid_closest(&boid, &closest);
+    let seek_velocity = seek_center(&boid, &closest);
 
     let mut velocity =
         average_velocity.clone() * AVERAGE_WEIGHT +
@@ -36,25 +42,31 @@ fn average_velocity(clique: &Vec<Boid>) -> Velocity {
 }
 
 fn avoid_closest(boid: &Boid, clique: &Vec<Boid>) -> Velocity {
-    let closest = closest_boid(&boid, &clique);
+    let maybe_closest = closest_boid(&boid, &clique);
 
-    let x = closest.x - boid.x;
-    let y = closest.y - boid.y;
-    let heading = y.atan2(x) + PI;
-    let distance = x.abs().hypot(y.abs());
-    let speed = 300.0 * 5.0/distance;
+    match maybe_closest {
+        Some(closest) => {
+            let x = closest.x - boid.x;
+            let y = closest.y - boid.y;
+            let heading = y.atan2(x) + PI;
+            let distance = x.abs().hypot(y.abs());
+            let speed = 300.0 * 5.0/distance;
 
-    Velocity::new(heading, speed)
+            Velocity::new(heading, speed)
+        },
+
+        None => Velocity::new(0.0, 0.0)
+    }
 }
 
-fn closest_boid(boid: &Boid, clique: &Vec<Boid>) -> Boid {
+fn closest_boid(boid: &Boid, clique: &Vec<Boid>) -> Option<Boid> {
     let mut tuples: Vec<(Boid, f64)> = clique.iter()
         .map(|c| (c.clone(), distance(boid, c)))
         .filter(|t| t.1 > 0.0)
         .collect();
     tuples.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap() );
 
-    tuples.first().unwrap().0.clone()
+    tuples.first().map(|t| t.0.clone())
 }
 
 fn distance(u: &Boid, v: &Boid) -> f64 {
